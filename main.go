@@ -2,6 +2,8 @@ package main
 
 import (
 	"book-manager-service/DataAccess"
+	"book-manager-service/Presentation"
+	"github.com/gin-gonic/gin"
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/sirupsen/logrus"
 )
@@ -30,4 +32,13 @@ func main() {
 	}
 	logger.Infoln("migrate tables and models successfully")
 
+	bookManagerServer := Presentation.BookManagerServer{
+		Db:     gormDB,
+		Logger: logger,
+	}
+
+	router := gin.Default()
+	router.POST("/api/v1/auth/signup", bookManagerServer.HandleSignUp)
+
+	router.Run("localhost:8080")
 }
