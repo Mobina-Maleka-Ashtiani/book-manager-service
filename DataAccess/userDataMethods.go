@@ -20,3 +20,7 @@ func (gdb *GormDB) PhoneNumberExistence(phoneNumber string) bool {
 
 	return count > 0
 }
+
+func (gdb *GormDB) AddUserToDatabase(user *User) error {
+	return gdb.db.Create(user).Error
+}
