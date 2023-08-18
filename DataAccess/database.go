@@ -52,3 +52,12 @@ func NewGormDB(cfg Config) (*GormDB, error) {
 		db:  db,
 	}, nil
 }
+
+func (gdb *GormDB) CreateSchemas() error {
+	err := gdb.db.AutoMigrate(&User{})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

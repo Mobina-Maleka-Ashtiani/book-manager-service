@@ -23,4 +23,11 @@ func main() {
 		logger.WithError(err).Fatal("error in connecting to the postgres database")
 	}
 	logger.Info("connected to the database")
+
+	err = gormDB.CreateSchemas()
+	if err != nil {
+		logger.WithError(err).Fatal("error in database migration")
+	}
+	logger.Infoln("migrate tables and models successfully")
+
 }
