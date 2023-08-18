@@ -1,6 +1,9 @@
 package Presentation
 
-import "strings"
+import (
+	"book-manager-service/DataAccess"
+	"strings"
+)
 
 func firstNameValidation(firstName string) bool {
 	str := "abcdefghijklmnopqrtsuvwxyzABCDEFGEHIJKLMNOPQRSTUVWXYZ"
@@ -24,6 +27,13 @@ func lastNameValidation(lastName string) bool {
 		if !strings.Contains(str, string(lastName[i])) {
 			return false
 		}
+	}
+	return true
+}
+
+func genderValidation(gender DataAccess.Gender) bool {
+	if gender != DataAccess.Female && gender != DataAccess.Male && gender != DataAccess.NonBinary && gender != DataAccess.Transgender && gender != DataAccess.Intersex && gender != DataAccess.Other {
+		return false
 	}
 	return true
 }
