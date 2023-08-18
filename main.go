@@ -17,4 +17,10 @@ func main() {
 	logger.SetLevel(logrus.DebugLevel)
 	logger.SetReportCaller(true)
 	logger.SetFormatter(&logrus.TextFormatter{ForceColors: true})
+
+	gormDB, err := DataAccess.NewGormDB(cfg)
+	if err != nil {
+		logger.WithError(err).Fatal("error in connecting to the postgres database")
+	}
+	logger.Info("connected to the database")
 }
