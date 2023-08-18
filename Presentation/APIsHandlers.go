@@ -48,5 +48,13 @@ func (bms *BookManagerServer) HandleLogin(context *gin.Context) {
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-	// ...
+
+	token, err := BusinessLogic.GenerateJWTToken(user.Username)
+	if err != nil {
+		bms.Logger.WithError(err).Warn("token generation failed")
+		context.IndentedJSON(http.StatusUnprocessableEntity, gin.H{"message": "token generation failed"})
+		return
+	}
+	
+	context.IndentedJSON(http.StatusOK, gin.H{"access_token": token})
 }
