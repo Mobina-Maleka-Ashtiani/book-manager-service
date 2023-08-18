@@ -6,3 +6,10 @@ func (gdb *GormDB) UsernameExistence(username string) bool {
 
 	return count > 0
 }
+
+func (gdb *GormDB) EmailExistence(email string) bool {
+	var count int64
+	gdb.db.Model(&User{}).Where(&User{Email: email}).Count(&count)
+
+	return count > 0
+}
