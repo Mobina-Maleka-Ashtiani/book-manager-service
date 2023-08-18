@@ -33,7 +33,7 @@ func SignUpInputValidation(user DataAccess.User) error {
 	return nil
 }
 
-func LoginValidation(user DataAccess.User) error {
+func LoginInputValidation(user DataAccess.User) error {
 	if !usernameValidation(user.Username) {
 		return errors.New("username is invalid")
 	}

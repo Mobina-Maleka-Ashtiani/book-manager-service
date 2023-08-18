@@ -27,3 +27,17 @@ func (bms *BookManagerServer) HandleSignUp(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, gin.H{"message": "sign up successfully"})
 
 }
+func (bms *BookManagerServer) HandleLogin(context *gin.Context) {
+	var user DataAccess.User
+	if err := context.ShouldBindJSON(&user); err != nil {
+		bms.Logger.WithError(err).Warn("con not read the request data and convert it to json")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "con not read the request data and convert it to json"})
+		return
+	}
+	if err := LoginInputValidation(user); err != nil {
+		bms.Logger.WithError(err).Warn("invalid username or password")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	// ...
+}
