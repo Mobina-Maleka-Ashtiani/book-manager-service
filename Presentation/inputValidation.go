@@ -4,6 +4,7 @@ import (
 	"book-manager-service/DataAccess"
 	"regexp"
 	"strings"
+	"unicode"
 )
 
 func firstNameValidation(firstName string) bool {
@@ -66,4 +67,36 @@ func emailValidation(email string) bool {
 	pattern := `^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$`
 	re := regexp.MustCompile(pattern)
 	return re.MatchString(email)
+}
+
+func passwordValidation(password string) bool {
+	var (
+		upp, low, num, sym bool
+		tot                uint8
+	)
+
+	for _, char := range password {
+		switch {
+		case unicode.IsUpper(char):
+			upp = true
+			tot++
+		case unicode.IsLower(char):
+			low = true
+			tot++
+		case unicode.IsNumber(char):
+			num = true
+			tot++
+		case unicode.IsPunct(char) || unicode.IsSymbol(char):
+			sym = true
+			tot++
+		default:
+			return false
+		}
+	}
+
+	if !upp || !low || !num || !sym || tot < 8 {
+		return false
+	}
+
+	return true
 }
