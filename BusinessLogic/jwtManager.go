@@ -2,6 +2,8 @@ package BusinessLogic
 
 import (
 	"crypto/rand"
+	"errors"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"time"
 )
@@ -30,4 +32,23 @@ func GenerateJWTToken(username string) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+func DecodeJWTToken(tokenString string) (string, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return secretKey, nil
+	})
+	if err != nil {
+		return "", err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		username := claims["sub"].(string)
+		return username, nil
+	}
+
+	return "", errors.New("invalid token")
 }
