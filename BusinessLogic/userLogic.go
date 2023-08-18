@@ -27,3 +27,17 @@ func AddUser(gdb *DataAccess.GormDB, user DataAccess.User) error {
 	}
 	return gdb.AddUserToDatabase(&user)
 }
+
+func CheckUserCredential(gdb *DataAccess.GormDB, user DataAccess.User) error {
+	foundUser, err := gdb.FindUserByUsername(user.Username)
+	if err != nil {
+		return errors.New("there is no user with this username")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(user.Password))
+	if err != nil {
+		return errors.New("the password is incorrect")
+	}
+
+	return nil
+}
