@@ -55,6 +55,6 @@ func (bms *BookManagerServer) HandleLogin(context *gin.Context) {
 		context.IndentedJSON(http.StatusUnprocessableEntity, gin.H{"message": "token generation failed"})
 		return
 	}
-	
+
 	context.IndentedJSON(http.StatusOK, gin.H{"access_token": token})
 }
