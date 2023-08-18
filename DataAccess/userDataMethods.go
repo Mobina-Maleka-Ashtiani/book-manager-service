@@ -24,3 +24,13 @@ func (gdb *GormDB) PhoneNumberExistence(phoneNumber string) bool {
 func (gdb *GormDB) AddUserToDatabase(user *User) error {
 	return gdb.db.Create(user).Error
 }
+
+func (gdb *GormDB) FindUserByUsername(username string) (*User, error) {
+	var user User
+	err := gdb.db.Where(&User{Username: username}).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
