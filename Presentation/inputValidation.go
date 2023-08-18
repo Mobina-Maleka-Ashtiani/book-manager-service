@@ -2,6 +2,7 @@ package Presentation
 
 import (
 	"book-manager-service/DataAccess"
+	"regexp"
 	"strings"
 )
 
@@ -36,4 +37,14 @@ func genderValidation(gender DataAccess.Gender) bool {
 		return false
 	}
 	return true
+}
+
+func phoneNumberValidation(phoneNumber string) bool {
+	if phoneNumber == "" {
+		return false
+	}
+	pattern := `((\+|\(|0)?\d{1,3})?((\s|\)|\-))?(\d{10})$`
+	re := regexp.MustCompile(pattern)
+	return re.MatchString(phoneNumber)
+
 }
