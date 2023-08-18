@@ -48,3 +48,16 @@ func phoneNumberValidation(phoneNumber string) bool {
 	return re.MatchString(phoneNumber)
 
 }
+
+func usernameValidation(username string) bool {
+	str := "abcdefghijklmnopqrtsuvwxyzABCDEFGEHIJKLMNOPQRSTUVWXYZ0123456789-_"
+	if len(username) < 1 {
+		return false
+	}
+	for i := 0; i < len(username); i++ {
+		if !strings.Contains(str, string(username[i])) {
+			return false
+		}
+	}
+	return true
+}
