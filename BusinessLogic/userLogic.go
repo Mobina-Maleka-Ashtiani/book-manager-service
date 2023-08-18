@@ -25,4 +25,5 @@ func AddUser(gdb *DataAccess.GormDB, user DataAccess.User) error {
 	} else {
 		user.Password = string(pw)
 	}
+	return gdb.AddUserToDatabase(&user)
 }
