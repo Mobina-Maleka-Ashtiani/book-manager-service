@@ -14,16 +14,19 @@ func (bms *BookManagerServer) HandleSignUp(context *gin.Context) {
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "con not read the request data and convert it to json"})
 		return
 	}
+
 	if err := SignUpInputValidation(user); err != nil {
 		bms.Logger.WithError(err).Warn("invalid information")
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
+
 	if err := BusinessLogic.AddUser(bms.Db, user); err != nil {
 		bms.Logger.WithError(err).Warn("can not create a new user")
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
+
 	context.IndentedJSON(http.StatusOK, gin.H{"message": "sign up successfully"})
 
 }
@@ -34,8 +37,14 @@ func (bms *BookManagerServer) HandleLogin(context *gin.Context) {
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "con not read the request data and convert it to json"})
 		return
 	}
+
 	if err := LoginInputValidation(user); err != nil {
 		bms.Logger.WithError(err).Warn("invalid username or password")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	if err := BusinessLogic.CheckUserCredential(bms.Db, user); err != nil {
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
