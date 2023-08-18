@@ -33,6 +33,16 @@ func SignUpInputValidation(user DataAccess.User) error {
 	return nil
 }
 
+func LoginValidation(user DataAccess.User) error {
+	if !usernameValidation(user.Username) {
+		return errors.New("username is invalid")
+	}
+	if !passwordValidation(user.Password) {
+		return errors.New("password is invalid")
+	}
+	return nil
+}
+
 func firstNameValidation(firstName string) bool {
 	str := "abcdefghijklmnopqrtsuvwxyzABCDEFGEHIJKLMNOPQRSTUVWXYZ"
 	if len(firstName) < 1 {
