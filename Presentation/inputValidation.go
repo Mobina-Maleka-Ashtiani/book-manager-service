@@ -2,10 +2,36 @@ package Presentation
 
 import (
 	"book-manager-service/DataAccess"
+	"errors"
 	"regexp"
 	"strings"
 	"unicode"
 )
+
+func SignUpInputValidation(user DataAccess.User) error {
+	if !firstNameValidation(user.FirstName) {
+		return errors.New("firstName is invalid")
+	}
+	if !lastNameValidation(user.LastName) {
+		return errors.New("lastName is invalid")
+	}
+	if !genderValidation(user.Gender) {
+		return errors.New("gender is invalid")
+	}
+	if !phoneNumberValidation(user.PhoneNumber) {
+		return errors.New("phoneNumber is invalid")
+	}
+	if !usernameValidation(user.Username) {
+		return errors.New("username is invalid")
+	}
+	if !emailValidation(user.Email) {
+		return errors.New("email is invalid")
+	}
+	if !passwordValidation(user.Password) {
+		return errors.New("password is invalid")
+	}
+	return nil
+}
 
 func firstNameValidation(firstName string) bool {
 	str := "abcdefghijklmnopqrtsuvwxyzABCDEFGEHIJKLMNOPQRSTUVWXYZ"
