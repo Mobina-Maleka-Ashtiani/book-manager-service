@@ -68,7 +68,7 @@ func (bms *BookManagerServer) HandleCreateBook(context *gin.Context) {
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "failed to decode access token"})
 		return
 	}
-	
+
 	user, err := BusinessLogic.FindUserByUsername(bms.Db, username)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("user not found")

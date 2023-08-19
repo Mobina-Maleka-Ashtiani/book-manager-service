@@ -48,3 +48,10 @@ func FindUserByUsername(gdb *DataAccess.GormDB, username string) (*DataAccess.Us
 	}
 	return foundUser, nil
 }
+
+func AddBookToUser(gdb *DataAccess.GormDB, user DataAccess.User, book DataAccess.Book) error {
+	if err := gdb.AddBookToUser(user, book); err != nil {
+		return errors.New("failed to create book for you :(")
+	}
+	return nil
+}
