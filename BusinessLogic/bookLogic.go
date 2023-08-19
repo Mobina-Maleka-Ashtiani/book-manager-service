@@ -70,3 +70,12 @@ func GetAllBooks(gdb *DataAccess.GormDB) ([]BookRequestAndResponse, error) {
 	}
 	return brs, nil
 }
+
+func GetBookByID(gdb *DataAccess.GormDB, id int) (*BookRequestAndResponse, error) {
+	book, err := gdb.GetBookByID(id)
+	if err != nil {
+		return nil, err
+	}
+	br := ConvertBookToBookResponse(*book)
+	return &br, nil
+}
