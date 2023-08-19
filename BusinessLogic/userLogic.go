@@ -40,3 +40,11 @@ func CheckUserCredential(gdb *DataAccess.GormDB, user DataAccess.User) error {
 
 	return nil
 }
+
+func FindUserByUsername(gdb *DataAccess.GormDB, username string) (*DataAccess.User, error) {
+	foundUser, err := gdb.FindUserByUsername(username)
+	if err != nil {
+		return nil, errors.New("there is no user with this username")
+	}
+	return foundUser, nil
+}
