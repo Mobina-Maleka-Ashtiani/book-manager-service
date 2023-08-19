@@ -82,4 +82,12 @@ func (bms *BookManagerServer) HandleCreateBook(context *gin.Context) {
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "con not read the request data and convert it to json"})
 		return
 	}
+
+	if err := BusinessLogic.AddBookToUser(bms.Db, *user, book); err != nil {
+		bms.Logger.WithError(err).Warn("failed to add book")
+		context.IndentedJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+
+	context.IndentedJSON(http.StatusOK, gin.H{"message": "successfully added this book to your books"})
 }
