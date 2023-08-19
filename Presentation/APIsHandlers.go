@@ -76,14 +76,14 @@ func (bms *BookManagerServer) HandleCreateBook(context *gin.Context) {
 		return
 	}
 
-	var book DataAccess.Book
-	if err := context.ShouldBindJSON(&book); err != nil {
+	var bookRequest BusinessLogic.BookRequestAndResponse
+	if err := context.ShouldBindJSON(&bookRequest); err != nil {
 		bms.Logger.WithError(err).Warn("con not read the request data and convert it to json")
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "con not read the request data and convert it to json"})
 		return
 	}
 
-	if err := BusinessLogic.AddBookToUser(bms.Db, *user, book); err != nil {
+	if err := BusinessLogic.AddBookToUser(bms.Db, *user, bookRequest); err != nil {
 		bms.Logger.WithError(err).Warn("failed to add book")
 		context.IndentedJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
