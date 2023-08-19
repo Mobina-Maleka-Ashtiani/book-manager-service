@@ -24,13 +24,14 @@ type GormDB struct {
 
 type User struct {
 	gorm.Model
-	FirstName   string `gorm:"varchar(50)" json:"first_name"`
-	LastName    string `gorm:"varchar(50)" json:"last_name"`
-	Gender      Gender `gorm:"varchar(25)" json:"gender"`
-	PhoneNumber string `gorm:"varchar(30),unique" json:"phone_number"`
-	Username    string `gorm:"varchar(50),unique" json:"username"`
-	Email       string `gorm:"varchar(50),unique" json:"email"`
-	Password    string `gorm:"varchar(64)" json:"password"`
+	FirstName   string  `gorm:"varchar(50)" json:"first_name"`
+	LastName    string  `gorm:"varchar(50)" json:"last_name"`
+	Gender      Gender  `gorm:"varchar(25)" json:"gender"`
+	PhoneNumber string  `gorm:"varchar(30),unique" json:"phone_number"`
+	Username    string  `gorm:"varchar(50),unique" json:"username"`
+	Email       string  `gorm:"varchar(50),unique" json:"email"`
+	Password    string  `gorm:"varchar(64)" json:"password"`
+	Books       []*Book `gorm:"many2many:user_books;"`
 }
 
 type Author struct {
@@ -39,6 +40,20 @@ type Author struct {
 	LastName    string `gorm:"varchar(50)" json:"last_name"`
 	Birthday    string `gorm:"varchar(50)" json:"birthday"`
 	Nationality string `gorm:"varchar(50)" json:"nationality"`
+}
+
+type Book struct {
+	gorm.Model
+	Name           string  `gorm:"varchar(50)" json:"name"`
+	Author         Author  `gorm:"foreignKey:AuthorID" json:"author"`
+	AuthorID       uint    `gorm:"int" json:"author_id"`
+	Category       string  `gorm:"varchar(20)" json:"category"`
+	Volume         int     `gorm:"int" json:"volume"`
+	PublishedAt    string  `gorm:"varchar(40)" json:"published_at"`
+	Summary        string  `gorm:"varchar(100)" json:"summary"`
+	TableOfContent string  `gorm:"varchar(50)" json:"table_of_content"`
+	Publisher      string  `gorm:"varchar(50)" json:"publisher"`
+	Users          []*User `gorm:"many2many:user_books;"`
 }
 
 func NewGormDB(cfg Config) (*GormDB, error) {
