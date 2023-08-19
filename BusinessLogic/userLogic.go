@@ -20,7 +20,6 @@ func AddUser(gdb *DataAccess.GormDB, user DataAccess.User) error {
 	}
 
 	if pw, err := bcrypt.GenerateFromPassword([]byte(user.Password), 0); err != nil {
-		//log.Println(err, " password not hash")
 		return err
 	} else {
 		user.Password = string(pw)
