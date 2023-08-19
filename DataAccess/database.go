@@ -44,16 +44,16 @@ type Author struct {
 
 type Book struct {
 	gorm.Model
-	Name           string  `gorm:"varchar(50)" json:"name"`
-	Author         Author  `gorm:"foreignKey:AuthorID" json:"author"`
-	AuthorID       uint    `gorm:"int" json:"author_id"`
-	Category       string  `gorm:"varchar(20)" json:"category"`
-	Volume         int     `gorm:"int" json:"volume"`
-	PublishedAt    string  `gorm:"varchar(40)" json:"published_at"`
-	Summary        string  `gorm:"varchar(100)" json:"summary"`
-	TableOfContent string  `gorm:"varchar(50)" json:"table_of_content"`
-	Publisher      string  `gorm:"varchar(50)" json:"publisher"`
-	Users          []*User `gorm:"many2many:user_books;"`
+	Name            string  `gorm:"varchar(50)" json:"name"`
+	Author          Author  `gorm:"foreignKey:AuthorID" json:"author"`
+	AuthorID        uint    `gorm:"int" json:"author_id"`
+	Category        string  `gorm:"varchar(20)" json:"category"`
+	Volume          int     `gorm:"int" json:"volume"`
+	PublishedAt     string  `gorm:"varchar(40)" json:"published_at"`
+	Summary         string  `gorm:"varchar(100)" json:"summary"`
+	TableOfContents string  `gorm:"varchar(50)" json:"table_of_contents"`
+	Publisher       string  `gorm:"varchar(50)" json:"publisher"`
+	Users           []*User `gorm:"many2many:user_books;"`
 }
 
 func NewGormDB(cfg Config) (*GormDB, error) {
