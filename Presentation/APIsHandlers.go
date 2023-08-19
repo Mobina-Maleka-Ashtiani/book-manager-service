@@ -139,4 +139,15 @@ func (bms *BookManagerServer) HandleGetBook(context *gin.Context) {
 
 	idStr := context.Param("id")
 	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid id"})
+		return
+	}
+	bookResponse, err := BusinessLogic.GetBookByID(bms.Db, id)
+	if err != nil {
+		bms.Logger.WithError(err).Warn("failed to get book")
+		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "failed to get book"})
+		return
+	}
+	context.IndentedJSON(http.StatusOK, bookResponse)
 }
