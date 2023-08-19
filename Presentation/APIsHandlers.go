@@ -109,4 +109,12 @@ func (bms *BookManagerServer) HandleGetAllBooks(context *gin.Context) {
 		return
 	}
 
+	booksResponse, err := BusinessLogic.GetAllBooks(bms.Db)
+	if err != nil {
+		bms.Logger.WithError(err).Warn("failed to get books")
+		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "failed to get books"})
+		return
+	}
+
+	context.IndentedJSON(http.StatusOK, map[string]interface{}{"books": booksResponse})
 }

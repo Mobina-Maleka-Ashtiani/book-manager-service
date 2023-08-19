@@ -41,7 +41,7 @@ func main() {
 	router.POST("/api/v1/auth/signup", bookManagerServer.HandleSignUp)
 	router.POST("/api/v1/auth/login", bookManagerServer.HandleLogin)
 	router.POST("/api/v1/books", bookManagerServer.HandleCreateBook)
-	router.POST("/api/v1/books", bookManagerServer.HandleGetAllBooks)
+	router.GET("/api/v1/books", bookManagerServer.HandleGetAllBooks)
 
 	router.Run("localhost:8080")
 }

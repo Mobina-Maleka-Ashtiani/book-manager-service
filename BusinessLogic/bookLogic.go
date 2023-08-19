@@ -59,7 +59,7 @@ func ConvertBookToBookResponse(book DataAccess.Book) BookRequestAndResponse {
 	}
 }
 
-func GetAllBooks(gdb DataAccess.GormDB) ([]BookRequestAndResponse, error) {
+func GetAllBooks(gdb *DataAccess.GormDB) ([]BookRequestAndResponse, error) {
 	books, err := gdb.GetAllBooks()
 	if err != nil {
 		return nil, err
