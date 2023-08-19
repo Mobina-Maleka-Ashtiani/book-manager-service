@@ -72,7 +72,7 @@ func (bms *BookManagerServer) HandleCreateBook(context *gin.Context) {
 	user, err := BusinessLogic.FindUserByUsername(bms.Db, username)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("user not found")
-		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "failed to decode access token"})
+		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
 		return
 	}
 
@@ -90,4 +90,23 @@ func (bms *BookManagerServer) HandleCreateBook(context *gin.Context) {
 	}
 
 	context.IndentedJSON(http.StatusOK, gin.H{"message": "successfully added this book to your books"})
+}
+
+func (bms *BookManagerServer) HandleGetAllBooks(context *gin.Context) {
+	accessToken := context.GetHeader("Authorization")
+
+	username, err := BusinessLogic.DecodeJWTToken(accessToken)
+	if err != nil {
+		bms.Logger.WithError(err).Warn("failed to decode access token")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "failed to decode access token"})
+		return
+	}
+
+	_, err = BusinessLogic.FindUserByUsername(bms.Db, username)
+	if err != nil {
+		bms.Logger.WithError(err).Warn("user not found")
+		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
+		return
+	}
+
 }
