@@ -40,3 +40,20 @@ func ConvertBookRequestToBook(br BookRequestAndResponse) DataAccess.Book {
 		Publisher:       br.Publisher,
 	}
 }
+func ConvertBookToBookResponse(book DataAccess.Book) BookRequestAndResponse {
+	return BookRequestAndResponse{
+		Name: book.Name,
+		Author: AuthorRequestAndResponse{
+			FirstName:   book.Author.FirstName,
+			LastName:    book.Author.LastName,
+			Birthday:    book.Author.Birthday,
+			Nationality: book.Author.Nationality,
+		},
+		Category:        book.Category,
+		Volume:          book.Volume,
+		PublishedAt:     book.PublishedAt,
+		Summary:         book.Summary,
+		TableOfContents: strings.Split(book.TableOfContents, ","),
+		Publisher:       book.Publisher,
+	}
+}
