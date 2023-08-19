@@ -1,5 +1,10 @@
 package BusinessLogic
 
+import (
+	"book-manager-service/DataAccess"
+	"strings"
+)
+
 type AuthorRequestAndResponse struct {
 	FirstName   string `json:"first_name"`
 	LastName    string `json:"last_name"`
@@ -16,4 +21,22 @@ type BookRequestAndResponse struct {
 	Summary         string                   `json:"summary"`
 	TableOfContents []string                 `json:"table_of_contents"`
 	Publisher       string                   `json:"publisher"`
+}
+
+func ConvertBookRequestToBook(br BookRequestAndResponse) DataAccess.Book {
+	return DataAccess.Book{
+		Name: br.Name,
+		Author: DataAccess.Author{
+			FirstName:   br.Author.FirstName,
+			LastName:    br.Author.LastName,
+			Birthday:    br.Author.Birthday,
+			Nationality: br.Author.Nationality,
+		},
+		Category:        br.Category,
+		Volume:          br.Volume,
+		PublishedAt:     br.PublishedAt,
+		Summary:         br.Summary,
+		TableOfContents: strings.Join(br.TableOfContents[:], ","),
+		Publisher:       br.Publisher,
+	}
 }
