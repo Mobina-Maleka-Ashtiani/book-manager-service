@@ -40,6 +40,7 @@ func ConvertBookRequestToBook(br BookRequestAndResponse) DataAccess.Book {
 		Publisher:       br.Publisher,
 	}
 }
+
 func ConvertBookToBookResponse(book DataAccess.Book) BookRequestAndResponse {
 	return BookRequestAndResponse{
 		Name: book.Name,
@@ -56,4 +57,16 @@ func ConvertBookToBookResponse(book DataAccess.Book) BookRequestAndResponse {
 		TableOfContents: strings.Split(book.TableOfContents, ","),
 		Publisher:       book.Publisher,
 	}
+}
+
+func GetAllBooks(gdb DataAccess.GormDB) ([]BookRequestAndResponse, error) {
+	books, err := gdb.GetAllBooks()
+	if err != nil {
+		return nil, err
+	}
+	var brs []BookRequestAndResponse
+	for _, book := range books {
+		brs = append(brs, ConvertBookToBookResponse(book))
+	}
+	return brs, nil
 }
