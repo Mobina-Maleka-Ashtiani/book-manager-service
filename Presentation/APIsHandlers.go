@@ -5,6 +5,7 @@ import (
 	"book-manager-service/DataAccess"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func (bms *BookManagerServer) HandleSignUp(context *gin.Context) {
@@ -136,6 +137,6 @@ func (bms *BookManagerServer) HandleGetBook(context *gin.Context) {
 		return
 	}
 
-	id := context.Param("id")
-	
+	idStr := context.Param("id")
+	id, err := strconv.Atoi(idStr)
 }
