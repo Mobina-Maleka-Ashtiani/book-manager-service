@@ -58,3 +58,28 @@ func (bms *BookManagerServer) HandleLogin(context *gin.Context) {
 
 	context.IndentedJSON(http.StatusOK, gin.H{"access_token": token})
 }
+
+func (bms *BookManagerServer) HandleCreateBook(context *gin.Context) {
+	accessToken := context.GetHeader("Authorization")
+
+	username, err := BusinessLogic.DecodeJWTToken(accessToken)
+	if err != nil {
+		bms.Logger.WithError(err).Warn("failed to decode access token")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "failed to decode access token"})
+		return
+	}
+	
+	user, err := BusinessLogic.FindUserByUsername(bms.Db, username)
+	if err != nil {
+		bms.Logger.WithError(err).Warn("user not found")
+		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "failed to decode access token"})
+		return
+	}
+
+	var book DataAccess.Book
+	if err := context.ShouldBindJSON(&book); err != nil {
+		bms.Logger.WithError(err).Warn("con not read the request data and convert it to json")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "con not read the request data and convert it to json"})
+		return
+	}
+}
