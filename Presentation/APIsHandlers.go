@@ -231,4 +231,11 @@ func (bms *BookManagerServer) HandleDeleteBook(context *gin.Context) {
 		return
 	}
 
+	if err := BusinessLogic.DeleteBook(bms.Db, *userBook); err != nil {
+		bms.Logger.WithError(err).Warn("failed to delete book")
+		context.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		return
+	}
+
+	context.IndentedJSON(http.StatusOK, gin.H{"message": "book deleted successfully"})
 }
