@@ -177,4 +177,11 @@ func (bms *BookManagerServer) HandleUpdateBook(context *gin.Context) {
 		return
 	}
 
+	userBook, err := BusinessLogic.FindUserBook(bms.Db, *user, id)
+	if err != nil {
+		bms.Logger.WithError(err).Warn("book not found")
+		context.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		return
+	}
+
 }
