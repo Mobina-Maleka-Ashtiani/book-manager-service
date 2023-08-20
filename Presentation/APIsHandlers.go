@@ -184,4 +184,18 @@ func (bms *BookManagerServer) HandleUpdateBook(context *gin.Context) {
 		return
 	}
 
+	var bur BusinessLogic.BookUpdateRequest
+	if err := context.ShouldBindJSON(&bur); err != nil {
+		bms.Logger.WithError(err).Warn("con not read the request data and convert it to json")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "con not read the request data and convert it to json"})
+		return
+	}
+
+	if err := BusinessLogic.UpdateBook(bms.Db, *userBook, bur); err != nil {
+		bms.Logger.WithError(err).Warn("failed to update book")
+		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.IndentedJSON(http.StatusOK, gin.H{"message": "the book has been successfully updated"})
 }
