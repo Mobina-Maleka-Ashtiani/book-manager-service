@@ -92,3 +92,10 @@ func UpdateBook(gdb *DataAccess.GormDB, book DataAccess.Book, bur BookUpdateRequ
 	}
 	return nil
 }
+
+func DeleteBook(gdb *DataAccess.GormDB, book DataAccess.Book) error {
+	if err := gdb.DeleteBook(book); err != nil {
+		return errors.New("failed to delete book")
+	}
+	return nil
+}
