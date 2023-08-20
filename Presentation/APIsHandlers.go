@@ -31,6 +31,7 @@ func (bms *BookManagerServer) HandleSignUp(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, gin.H{"message": "sign up successfully"})
 
 }
+
 func (bms *BookManagerServer) HandleLogin(context *gin.Context) {
 	var user DataAccess.User
 	if err := context.ShouldBindJSON(&user); err != nil {
@@ -146,8 +147,34 @@ func (bms *BookManagerServer) HandleGetBook(context *gin.Context) {
 	bookResponse, err := BusinessLogic.GetBookByID(bms.Db, id)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to get book")
-		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "failed to get book"})
+		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	context.IndentedJSON(http.StatusOK, bookResponse)
+}
+
+func (bms *BookManagerServer) HandleUpdateBook(context *gin.Context) {
+	accessToken := context.GetHeader("Authorization")
+
+	username, err := BusinessLogic.DecodeJWTToken(accessToken)
+	if err != nil {
+		bms.Logger.WithError(err).Warn("failed to decode access token")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "failed to decode access token"})
+		return
+	}
+
+	user, err := BusinessLogic.FindUserByUsername(bms.Db, username)
+	if err != nil {
+		bms.Logger.WithError(err).Warn("user not found")
+		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
+		return
+	}
+
+	idStr := context.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid id"})
+		return
+	}
+
 }
