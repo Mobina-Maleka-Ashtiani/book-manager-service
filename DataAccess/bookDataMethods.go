@@ -16,3 +16,12 @@ func (gdb *GormDB) GetBookByID(id int) (*Book, error) {
 	return &book, nil
 
 }
+
+func (gdb *GormDB) UpdateBook(book Book, updateName string, updateCategory string) error {
+	book.Name = updateName
+	book.Category = updateCategory
+	if err := gdb.db.Save(&book).Error; err != nil {
+		return err
+	}
+	return nil
+}

@@ -2,6 +2,7 @@ package BusinessLogic
 
 import (
 	"book-manager-service/DataAccess"
+	"errors"
 	"strings"
 )
 
@@ -83,4 +84,11 @@ func GetBookByID(gdb *DataAccess.GormDB, id int) (*BookRequestAndResponse, error
 	}
 	br := ConvertBookToBookResponse(*book)
 	return &br, nil
+}
+
+func UpdateBook(gdb *DataAccess.GormDB, book DataAccess.Book, bur BookUpdateRequest) error {
+	if err := gdb.UpdateBook(book, bur.Name, bur.Category); err != nil {
+		return errors.New("failed to update book")
+	}
+	return nil
 }
