@@ -56,3 +56,17 @@ func AddBookToUser(gdb *DataAccess.GormDB, user DataAccess.User, br BookRequestA
 	}
 	return nil
 }
+
+func FindUserBook(gdb *DataAccess.GormDB, user DataAccess.User, bookId int) (*DataAccess.Book, error) {
+	book, err := gdb.GetBookByID(bookId)
+	if err != nil {
+		return nil, errors.New("book not found")
+	}
+
+	for _, userBook := range user.Books {
+		if userBook.ID == book.ID {
+			return userBook, nil
+		}
+	}
+	return nil, errors.New("book not found for you")
+}
