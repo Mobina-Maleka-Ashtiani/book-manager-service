@@ -25,3 +25,10 @@ func (gdb *GormDB) UpdateBook(book Book, updateName string, updateCategory strin
 	}
 	return nil
 }
+
+func (gdb *GormDB) DeleteBook(book Book) error {
+	if err := gdb.db.Delete(&book).Error; err != nil {
+		return err
+	}
+	return nil
+}
