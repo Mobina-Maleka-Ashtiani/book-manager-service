@@ -11,8 +11,8 @@ import (
 func (bms *BookManagerServer) HandleSignUp(context *gin.Context) {
 	var user DataAccess.User
 	if err := context.ShouldBindJSON(&user); err != nil {
-		bms.Logger.WithError(err).Warn("con not read the request data and convert it to json")
-		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "con not read the request data and convert it to json"})
+		bms.Logger.WithError(err).Warn("con not unmarshal the request data")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "con not unmarshal the request data"})
 		return
 	}
 
@@ -35,8 +35,8 @@ func (bms *BookManagerServer) HandleSignUp(context *gin.Context) {
 func (bms *BookManagerServer) HandleLogin(context *gin.Context) {
 	var user DataAccess.User
 	if err := context.ShouldBindJSON(&user); err != nil {
-		bms.Logger.WithError(err).Warn("con not read the request data and convert it to json")
-		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "con not read the request data and convert it to json"})
+		bms.Logger.WithError(err).Warn("con not unmarshal the request data")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "con not unmarshal the request data"})
 		return
 	}
 
@@ -47,14 +47,14 @@ func (bms *BookManagerServer) HandleLogin(context *gin.Context) {
 	}
 
 	if err := BusinessLogic.CheckUserCredential(bms.Db, user); err != nil {
-		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
 	token, err := BusinessLogic.GenerateJWTToken(user.Username)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to token generation")
-		context.IndentedJSON(http.StatusUnprocessableEntity, gin.H{"error": "failed to token generation"})
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "failed to token generation"})
 		return
 	}
 
@@ -67,7 +67,7 @@ func (bms *BookManagerServer) HandleCreateBook(context *gin.Context) {
 	username, err := BusinessLogic.DecodeJWTToken(accessToken)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to decode access token")
-		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "failed to decode access token"})
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "failed to decode access token"})
 		return
 	}
 
@@ -80,8 +80,8 @@ func (bms *BookManagerServer) HandleCreateBook(context *gin.Context) {
 
 	var bookRequest BusinessLogic.BookRequestAndResponse
 	if err := context.ShouldBindJSON(&bookRequest); err != nil {
-		bms.Logger.WithError(err).Warn("con not read the request data and convert it to json")
-		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "con not read the request data and convert it to json"})
+		bms.Logger.WithError(err).Warn("con not unmarshal the request data")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "con not unmarshal the request data"})
 		return
 	}
 
@@ -100,14 +100,14 @@ func (bms *BookManagerServer) HandleGetAllBooks(context *gin.Context) {
 	username, err := BusinessLogic.DecodeJWTToken(accessToken)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to decode access token")
-		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "failed to decode access token"})
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "failed to decode access token"})
 		return
 	}
 
 	_, err = BusinessLogic.FindUserByUsername(bms.Db, username)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("user not found")
-		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
+		context.IndentedJSON(http.StatusNotFound, gin.H{"error": "user not found"})
 		return
 	}
 
@@ -127,7 +127,7 @@ func (bms *BookManagerServer) HandleGetBook(context *gin.Context) {
 	username, err := BusinessLogic.DecodeJWTToken(accessToken)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to decode access token")
-		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "failed to decode access token"})
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "failed to decode access token"})
 		return
 	}
 
@@ -147,7 +147,7 @@ func (bms *BookManagerServer) HandleGetBook(context *gin.Context) {
 	bookResponse, err := BusinessLogic.GetBookByID(bms.Db, id)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to get book")
-		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "failed to get book"})
+		context.IndentedJSON(http.StatusNotFound, gin.H{"error": "book not found"})
 		return
 	}
 	context.IndentedJSON(http.StatusOK, bookResponse)
@@ -159,14 +159,14 @@ func (bms *BookManagerServer) HandleUpdateBook(context *gin.Context) {
 	username, err := BusinessLogic.DecodeJWTToken(accessToken)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to decode access token")
-		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "failed to decode access token"})
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "failed to decode access token"})
 		return
 	}
 
 	user, err := BusinessLogic.FindUserByUsername(bms.Db, username)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("user not found")
-		context.IndentedJSON(http.StatusNotFound, gin.H{"error": "user not found"})
+		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
 		return
 	}
 
@@ -186,8 +186,8 @@ func (bms *BookManagerServer) HandleUpdateBook(context *gin.Context) {
 
 	var bur BusinessLogic.BookUpdateRequest
 	if err := context.ShouldBindJSON(&bur); err != nil {
-		bms.Logger.WithError(err).Warn("con not read the request data and convert it to json")
-		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "con not read the request data and convert it to json"})
+		bms.Logger.WithError(err).Warn("con not unmarshal the request data")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "con not unmarshal the request data"})
 		return
 	}
 
@@ -206,7 +206,7 @@ func (bms *BookManagerServer) HandleDeleteBook(context *gin.Context) {
 	username, err := BusinessLogic.DecodeJWTToken(accessToken)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to decode access token")
-		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "failed to decode access token"})
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "failed to decode access token"})
 		return
 	}
 
@@ -233,7 +233,7 @@ func (bms *BookManagerServer) HandleDeleteBook(context *gin.Context) {
 
 	if err := BusinessLogic.DeleteBook(bms.Db, *userBook); err != nil {
 		bms.Logger.WithError(err).Warn("failed to delete book")
-		context.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

@@ -44,7 +44,7 @@ func LoginInputValidation(user DataAccess.User) error {
 }
 
 func firstNameValidation(firstName string) bool {
-	str := "abcdefghijklmnopqrtsuvwxyzABCDEFGEHIJKLMNOPQRSTUVWXYZ"
+	str := "abcdefghijklmnopqrtsuvwxyzABCDEFGEHIJKLMNOPQRSTUVWXYZ "
 	if len(firstName) < 1 {
 		return false
 	}
@@ -57,7 +57,7 @@ func firstNameValidation(firstName string) bool {
 }
 
 func lastNameValidation(lastName string) bool {
-	str := "abcdefghijklmnopqrtsuvwxyzABCDEFGEHIJKLMNOPQRSTUVWXYZ"
+	str := "abcdefghijklmnopqrtsuvwxyzABCDEFGEHIJKLMNOPQRSTUVWXYZ "
 	if len(lastName) < 1 {
 		return false
 	}
