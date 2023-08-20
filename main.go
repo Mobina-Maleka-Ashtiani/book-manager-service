@@ -44,6 +44,7 @@ func main() {
 	router.GET("/api/v1/books", bookManagerServer.HandleGetAllBooks)
 	router.GET("/api/v1/books/:id", bookManagerServer.HandleGetBook)
 	router.PUT("/api/v1/books/:id", bookManagerServer.HandleUpdateBook)
+	router.DELETE("/api/v1/books/:id", bookManagerServer.HandleDeleteBook)
 
 	router.Run("localhost:8080")
 }

@@ -197,5 +197,38 @@ func (bms *BookManagerServer) HandleUpdateBook(context *gin.Context) {
 		return
 	}
 
-	context.IndentedJSON(http.StatusOK, gin.H{"message": "the book has been successfully updated"})
+	context.IndentedJSON(http.StatusOK, gin.H{"message": "book updated successfully"})
+}
+
+func (bms *BookManagerServer) HandleDeleteBook(context *gin.Context) {
+	accessToken := context.GetHeader("Authorization")
+
+	username, err := BusinessLogic.DecodeJWTToken(accessToken)
+	if err != nil {
+		bms.Logger.WithError(err).Warn("failed to decode access token")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "failed to decode access token"})
+		return
+	}
+
+	user, err := BusinessLogic.FindUserByUsername(bms.Db, username)
+	if err != nil {
+		bms.Logger.WithError(err).Warn("user not found")
+		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
+		return
+	}
+
+	idStr := context.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid id"})
+		return
+	}
+
+	userBook, err := BusinessLogic.FindUserBook(bms.Db, *user, id)
+	if err != nil {
+		bms.Logger.WithError(err).Warn("book not found")
+		context.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		return
+	}
+
 }
