@@ -36,7 +36,7 @@ func (gdb *GormDB) FindUserByUsername(username string) (*User, error) {
 }
 
 func (gdb *GormDB) AddBookToUser(user User, book Book) error {
-	user.Books = append(user.Books, &book)
+	user.Books = append(user.Books, book)
 	if err := gdb.db.Save(&user).Error; err != nil {
 		return err
 	}

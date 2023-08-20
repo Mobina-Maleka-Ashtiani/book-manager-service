@@ -65,7 +65,7 @@ func FindUserBook(gdb *DataAccess.GormDB, user DataAccess.User, bookId int) (*Da
 
 	for _, userBook := range user.Books {
 		if userBook.ID == book.ID {
-			return userBook, nil
+			return &userBook, nil
 		}
 	}
 	return nil, errors.New("book not found for you")
