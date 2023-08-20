@@ -23,6 +23,11 @@ type BookRequestAndResponse struct {
 	Publisher       string                   `json:"publisher"`
 }
 
+type BookUpdateRequest struct {
+	Name     string `json:"name"`
+	Category string `json:"category"`
+}
+
 func ConvertBookRequestToBook(br BookRequestAndResponse) DataAccess.Book {
 	return DataAccess.Book{
 		Name: br.Name,
