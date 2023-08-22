@@ -63,11 +63,16 @@ func (bms *BookManagerServer) HandleLogin(context *gin.Context) {
 
 func (bms *BookManagerServer) HandleCreateBook(context *gin.Context) {
 	accessToken := context.GetHeader("Authorization")
+	if accessToken == "" {
+		bms.Logger.Warn("Token is not provided")
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "you should provide authentication token"})
+		return
+	}
 
 	username, err := BusinessLogic.DecodeJWTToken(accessToken)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to decode access token")
-		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "failed to decode access token"})
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "the token is invalid or has been expired"})
 		return
 	}
 
@@ -96,11 +101,16 @@ func (bms *BookManagerServer) HandleCreateBook(context *gin.Context) {
 
 func (bms *BookManagerServer) HandleGetAllBooks(context *gin.Context) {
 	accessToken := context.GetHeader("Authorization")
+	if accessToken == "" {
+		bms.Logger.Warn("Token is not provided")
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "you should provide authentication token"})
+		return
+	}
 
 	username, err := BusinessLogic.DecodeJWTToken(accessToken)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to decode access token")
-		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "failed to decode access token"})
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "the token is invalid or has been expired"})
 		return
 	}
 
@@ -123,11 +133,16 @@ func (bms *BookManagerServer) HandleGetAllBooks(context *gin.Context) {
 
 func (bms *BookManagerServer) HandleGetBook(context *gin.Context) {
 	accessToken := context.GetHeader("Authorization")
+	if accessToken == "" {
+		bms.Logger.Warn("Token is not provided")
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "you should provide authentication token"})
+		return
+	}
 
 	username, err := BusinessLogic.DecodeJWTToken(accessToken)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to decode access token")
-		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "failed to decode access token"})
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "the token is invalid or has been expired"})
 		return
 	}
 
@@ -139,6 +154,11 @@ func (bms *BookManagerServer) HandleGetBook(context *gin.Context) {
 	}
 
 	idStr := context.Param("id")
+	if idStr == "" {
+		bms.Logger.Warn("id is not provided")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "id is not provided"})
+		return
+	}
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
@@ -155,11 +175,16 @@ func (bms *BookManagerServer) HandleGetBook(context *gin.Context) {
 
 func (bms *BookManagerServer) HandleUpdateBook(context *gin.Context) {
 	accessToken := context.GetHeader("Authorization")
+	if accessToken == "" {
+		bms.Logger.Warn("Token is not provided")
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "you should provide authentication token"})
+		return
+	}
 
 	username, err := BusinessLogic.DecodeJWTToken(accessToken)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to decode access token")
-		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "failed to decode access token"})
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "the token is invalid or has been expired"})
 		return
 	}
 
@@ -171,6 +196,11 @@ func (bms *BookManagerServer) HandleUpdateBook(context *gin.Context) {
 	}
 
 	idStr := context.Param("id")
+	if idStr == "" {
+		bms.Logger.Warn("id is not provided")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "id is not provided"})
+		return
+	}
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
@@ -202,11 +232,16 @@ func (bms *BookManagerServer) HandleUpdateBook(context *gin.Context) {
 
 func (bms *BookManagerServer) HandleDeleteBook(context *gin.Context) {
 	accessToken := context.GetHeader("Authorization")
+	if accessToken == "" {
+		bms.Logger.Warn("Token is not provided")
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "you should provide authentication token"})
+		return
+	}
 
 	username, err := BusinessLogic.DecodeJWTToken(accessToken)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to decode access token")
-		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "failed to decode access token"})
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "the token is invalid or has been expired"})
 		return
 	}
 
@@ -218,6 +253,11 @@ func (bms *BookManagerServer) HandleDeleteBook(context *gin.Context) {
 	}
 
 	idStr := context.Param("id")
+	if idStr == "" {
+		bms.Logger.Warn("id is not provided")
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "id is not provided"})
+		return
+	}
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
