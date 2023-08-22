@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: book_manager
+    ports:
+      - 9090:8080
+    networks:
+      - book-manager-net
+    depends_on:
+      - database
+    restart: on-failure
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+
+  database:
+    image: postgres:15.4-alpine
+    container_name: book_manager_database
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env.local
+    networks:
+      - book-manager-net
+    volumes:
+      - book_manager_db_data:/var/lib/postgresql/data
+  
+networks:
+  book-manager-net:
+
+volumes:
+  book_manager_db_data:
