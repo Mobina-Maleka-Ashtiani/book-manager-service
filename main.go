@@ -38,6 +38,8 @@ func main() {
 	}
 
 	router := gin.Default()
+	router.Use(Presentation.FirstGinMiddleware())
+	router.Use(Presentation.SecondGinMiddleware())
 	router.POST("/api/v1/auth/signup", bookManagerServer.HandleSignUp)
 	router.POST("/api/v1/auth/login", bookManagerServer.HandleLogin)
 	router.POST("/api/v1/books", bookManagerServer.HandleCreateBook)
