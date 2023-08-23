@@ -1,4 +1,4 @@
-package BusinessLogic
+package Logic
 
 import (
 	"book-manager-service/DataAccess"
@@ -63,10 +63,8 @@ func FindUserBook(gdb *DataAccess.GormDB, user DataAccess.User, bookId int) (*Da
 		return nil, errors.New("book not found")
 	}
 
-	for _, userBook := range user.Books {
-		if userBook.ID == book.ID {
-			return &userBook, nil
-		}
+	if book.UserId == user.ID {
+		return book, nil
 	}
 	return nil, errors.New("book not found for you")
 }

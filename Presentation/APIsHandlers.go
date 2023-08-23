@@ -1,8 +1,8 @@
 package Presentation
 
 import (
-	"book-manager-service/BusinessLogic"
 	"book-manager-service/DataAccess"
+	"book-manager-service/Logic"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -21,7 +21,7 @@ func (bms *BookManagerServer) HandleSignUp(context *gin.Context) {
 		return
 	}
 
-	if err := BusinessLogic.AddUser(bms.Db, user); err != nil {
+	if err := Logic.AddUser(bms.Db, user); err != nil {
 		bms.Logger.WithError(err).Warn("can not create a new user")
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -45,12 +45,12 @@ func (bms *BookManagerServer) HandleLogin(context *gin.Context) {
 		return
 	}
 
-	if err := BusinessLogic.CheckUserCredential(bms.Db, user); err != nil {
+	if err := Logic.CheckUserCredential(bms.Db, user); err != nil {
 		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	token, err := BusinessLogic.GenerateJWTToken(user.Username)
+	token, err := Logic.GenerateJWTToken(user.Username)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to token generation")
 		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "failed to token generation"})
@@ -69,21 +69,21 @@ func (bms *BookManagerServer) HandleCreateBook(context *gin.Context) {
 	}
 	username := un.(string)
 
-	user, err := BusinessLogic.FindUserByUsername(bms.Db, username)
+	user, err := Logic.FindUserByUsername(bms.Db, username)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("user not found")
 		context.IndentedJSON(http.StatusNotFound, gin.H{"error": "user not found"})
 		return
 	}
 
-	var bookRequest BusinessLogic.BookRequestAndResponse
+	var bookRequest Logic.BookRequestAndResponse
 	if err := context.ShouldBindJSON(&bookRequest); err != nil {
 		bms.Logger.WithError(err).Warn("con not unmarshal the request data")
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "con not unmarshal the request data"})
 		return
 	}
 
-	if err := BusinessLogic.AddBookToUser(bms.Db, *user, bookRequest); err != nil {
+	if err := Logic.AddBookToUser(bms.Db, *user, bookRequest); err != nil {
 		bms.Logger.WithError(err).Warn("failed to add book")
 		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -101,14 +101,14 @@ func (bms *BookManagerServer) HandleGetAllBooks(context *gin.Context) {
 	}
 	username := un.(string)
 
-	_, err := BusinessLogic.FindUserByUsername(bms.Db, username)
+	_, err := Logic.FindUserByUsername(bms.Db, username)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("user not found")
 		context.IndentedJSON(http.StatusNotFound, gin.H{"error": "user not found"})
 		return
 	}
 
-	booksResponse, err := BusinessLogic.GetAllBooks(bms.Db)
+	booksResponse, err := Logic.GetAllBooks(bms.Db)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to get books")
 		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "failed to get books"})
@@ -127,7 +127,7 @@ func (bms *BookManagerServer) HandleGetBook(context *gin.Context) {
 	}
 	username := un.(string)
 
-	_, err := BusinessLogic.FindUserByUsername(bms.Db, username)
+	_, err := Logic.FindUserByUsername(bms.Db, username)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("user not found")
 		context.IndentedJSON(http.StatusNotFound, gin.H{"error": "user not found"})
@@ -141,7 +141,7 @@ func (bms *BookManagerServer) HandleGetBook(context *gin.Context) {
 	}
 	id := bi.(int)
 
-	bookResponse, err := BusinessLogic.GetBookByID(bms.Db, id)
+	bookResponse, err := Logic.GetBookByID(bms.Db, id)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("failed to get book")
 		context.IndentedJSON(http.StatusNotFound, gin.H{"error": "book not found"})
@@ -159,7 +159,7 @@ func (bms *BookManagerServer) HandleUpdateBook(context *gin.Context) {
 	}
 	username := un.(string)
 
-	user, err := BusinessLogic.FindUserByUsername(bms.Db, username)
+	user, err := Logic.FindUserByUsername(bms.Db, username)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("user not found")
 		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
@@ -173,21 +173,21 @@ func (bms *BookManagerServer) HandleUpdateBook(context *gin.Context) {
 	}
 	id := bi.(int)
 
-	userBook, err := BusinessLogic.FindUserBook(bms.Db, *user, id)
+	userBook, err := Logic.FindUserBook(bms.Db, *user, id)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("book not found")
 		context.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
-	var bur BusinessLogic.BookUpdateRequest
+	var bur Logic.BookUpdateRequest
 	if err := context.ShouldBindJSON(&bur); err != nil {
 		bms.Logger.WithError(err).Warn("con not unmarshal the request data")
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "con not unmarshal the request data"})
 		return
 	}
 
-	if err := BusinessLogic.UpdateBook(bms.Db, *userBook, bur); err != nil {
+	if err := Logic.UpdateBook(bms.Db, *userBook, bur); err != nil {
 		bms.Logger.WithError(err).Warn("failed to update book")
 		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -205,7 +205,7 @@ func (bms *BookManagerServer) HandleDeleteBook(context *gin.Context) {
 	}
 	username := un.(string)
 
-	user, err := BusinessLogic.FindUserByUsername(bms.Db, username)
+	user, err := Logic.FindUserByUsername(bms.Db, username)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("user not found")
 		context.IndentedJSON(http.StatusNotFound, gin.H{"error": "user not found"})
@@ -219,14 +219,14 @@ func (bms *BookManagerServer) HandleDeleteBook(context *gin.Context) {
 	}
 	id := bi.(int)
 
-	userBook, err := BusinessLogic.FindUserBook(bms.Db, *user, id)
+	userBook, err := Logic.FindUserBook(bms.Db, *user, id)
 	if err != nil {
 		bms.Logger.WithError(err).Warn("book not found")
 		context.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := BusinessLogic.DeleteBook(bms.Db, *userBook); err != nil {
+	if err := Logic.DeleteBook(bms.Db, *userBook); err != nil {
 		bms.Logger.WithError(err).Warn("failed to delete book")
 		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

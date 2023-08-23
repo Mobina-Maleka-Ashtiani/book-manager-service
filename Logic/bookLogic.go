@@ -1,4 +1,4 @@
-package BusinessLogic
+package Logic
 
 import (
 	"book-manager-service/DataAccess"
