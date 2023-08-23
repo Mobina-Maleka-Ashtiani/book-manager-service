@@ -1,7 +1,7 @@
 package Presentation
 
 import (
-	"book-manager-service/BusinessLogic"
+	"book-manager-service/Logic"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
@@ -10,7 +10,7 @@ func FirstGinMiddleware() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		token := context.GetHeader("Authorization")
 		if token != "" {
-			username, err := BusinessLogic.DecodeJWTToken(token)
+			username, err := Logic.DecodeJWTToken(token)
 			if err == nil {
 				context.Set("username", username)
 			}
